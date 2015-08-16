@@ -1,6 +1,7 @@
 KERNEL = $(strip $(shell uname -r))
 INCLUDE = -I /usr/src/linux-headers-$(KERNEL)/include
 CC_OPTS = -O3 -Wall -static -Wno-unknown-pragmas
+#CC_OPTS = -O3 -Wall -Wno-unknown-pragmas
 CC = gcc
 
 CFLAGS = $(CC_OPTS) $(INCLUDE)
