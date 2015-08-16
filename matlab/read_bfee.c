@@ -6,7 +6,7 @@
 /* The computational routine */
 void read_bfee(unsigned char *inBytes, mxArray *outCell)
 {
-	unsigned long timestamp_low = inBytes[0] + (inBytes[1] << 8) +
+	unsigned int timestamp_low = inBytes[0] + (inBytes[1] << 8) +
 		(inBytes[2] << 16) + (inBytes[3] << 24);
 	unsigned short bfee_count = inBytes[4] + (inBytes[5] << 8);
 	unsigned int Nrx = inBytes[8];
@@ -24,8 +24,10 @@ void read_bfee(unsigned char *inBytes, mxArray *outCell)
 	unsigned int index = 0, remainder;
 	unsigned char *payload = &inBytes[20];
 	char tmp;
-	int size[] = {Ntx, Nrx, 30};
+	mwSize size[] = {Ntx, Nrx, 30};
 	mxArray *csi = mxCreateNumericArray(3, size, mxDOUBLE_CLASS, mxCOMPLEX);
+	mwSize perm_size[] = {1, 3};
+	mxArray *perm = mxCreateNumericArray(2, perm_size, mxDOUBLE_CLASS, mxREAL);
 	double* ptrR = (double *)mxGetPr(csi);
 	double* ptrI = (double *)mxGetPi(csi);
 
@@ -54,8 +56,6 @@ void read_bfee(unsigned char *inBytes, mxArray *outCell)
 	}
 
 	/* Compute the permutation array */
-	int perm_size[] = {1, 3};
-	mxArray *perm = mxCreateNumericArray(2, perm_size, mxDOUBLE_CLASS, mxREAL);
 	ptrR = (double *)mxGetPr(perm);
 	ptrR[0] = ((antenna_sel) & 0x3) + 1;
 	ptrR[1] = ((antenna_sel >> 2) & 0x3) + 1;
@@ -93,6 +93,15 @@ void read_bfee(unsigned char *inBytes, mxArray *outCell)
 void mexFunction(int nlhs, mxArray *plhs[],
 	         int nrhs, const mxArray *prhs[])
 {
+	const char* fieldnames[] = {"timestamp_low",
+		"bfee_count",
+		"Nrx", "Ntx",
+		"rssi_a", "rssi_b", "rssi_c",
+		"noise",
+		"agc",
+		"perm",
+		"rate",
+		"csi"};
 	unsigned char *inBytes;		/* A beamforming matrix */
 	mxArray *outCell;		/* The cellular output */
 
@@ -112,15 +121,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
 	inBytes = mxGetData(prhs[0]);
 
 	/* create the output matrix */
-	const char* fieldnames[] = {"timestamp_low",
-		"bfee_count",
-		"Nrx", "Ntx",
-		"rssi_a", "rssi_b", "rssi_c",
-		"noise",
-		"agc",
-		"perm",
-		"rate",
-		"csi"};
 	outCell = mxCreateStructMatrix(1, 1, 12, fieldnames);
 
 

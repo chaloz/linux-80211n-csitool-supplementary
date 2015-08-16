@@ -1,17 +1,11 @@
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <linux/socket.h>
-#include <linux/netlink.h>
-#include <linux/connector.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <signal.h>
-#include <unistd.h>
-#include <stdint.h>
-#include <errno.h>
-
 #include "iwl_nl.h"
+#include "iwl_connector.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <linux/netlink.h>
 
 static char netlink_buffer[IWL_NL_BUFFER_SIZE];
 static uint32_t seq = 0;
@@ -56,6 +50,11 @@ int open_iwl_netlink_socket()
 	}
 
 	return sock_fd;
+}
+
+void close_iwl_netlink_socket(int sock_fd)
+{
+	close(sock_fd);
 }
 
 int iwl_netlink_recv(int sock_fd, u_char **buf, int *len)

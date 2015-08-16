@@ -1,16 +1,16 @@
 /*
  * (c) 2008-2011 Daniel Halperin <dhalperi@cs.washington.edu>
  */
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <linux/socket.h>
-#include <linux/netlink.h>
-#include <linux/connector.h>
-#include <string.h>
-#include <stdlib.h>
+#include "iwl_connector.h"
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <signal.h>
 #include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <linux/netlink.h>
 
 #define MAX_PAYLOAD 2048
 #define SLOW_MSG_CNT 1
@@ -104,7 +104,7 @@ void check_usage(int argc, char** argv)
 {
 	if (argc != 2)
 	{
-		fprintf(stderr, "Usage: log_to_file <output_file>\n");
+		fprintf(stderr, "Usage: %s <output_file>\n", argv[0]);
 		exit_program(1);
 	}
 }
